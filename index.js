@@ -1,7 +1,4 @@
 const request = require("request");
-const jsdom = require("jsdom");
-const query = require("query-string");
-const { JSDOM } = jsdom;
 
 const shopIdsByUsername = "https://shopee.vn/api/v1/shop_ids_by_username/";
 
