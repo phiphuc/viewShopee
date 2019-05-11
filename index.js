@@ -119,7 +119,10 @@ const getUrlListItem = id => {
   );
 };
 
-const getList = (cookie, url) => {
+const getList = (cookie, idShop, page) => {
+  const url  = "https://shopee.vn/api/v2/search_items/?by=pop&limit=30&match_id=" +
+  idShop +
+  "&newest="+page+"&order=desc&page_type=shop"
   return new Promise((res, rej) => {
     request(
       {
@@ -200,26 +203,42 @@ const viewPage = (idShop, idItem, cookie) => {
   });
 };
 
-const main = async () => {
-  const url = "https://shopee.vn/phiphuc1994";
+const main = async url => {
   try {
     const cookie = await getCookie(url);
     const idShop = await getIdsByUsername(url, cookie);
-    console.log('start view shop id: '+idShop+' .....Link : '+url);
+    console.log("start view shop id: " + idShop + " .....Link : " + url);
 
     const urlListItem = getUrlListItem(idShop);
-    const list = await getList(cookie.cookieArray, urlListItem);
-    const itemsPage = list.items;
+    let count  = 0;
+    let itemsPage = [];
+    while(true){
+      const list = await getList(cookie.cookieArray, 
+        idShop, count);
+      itemsPage = list.items;
+      count +=  30;
+      if(itemsPage.length < 30){
+        break
+      }
+    }
 
     itemsPage.forEach(async item => {
-      console.log('view item: '+item.itemid+' ... Link: https://shopee.vn/product/'+idShop+'/'+item.itemid);
+      console.log(
+        "view item: " +
+          item.itemid +
+          " ... Link: https://shopee.vn/product/" +
+          idShop +
+          "/" +
+          item.itemid
+      );
       await viewPage(idShop, item.itemid, cookie.cookieArray);
     });
-    console.log('end view shop id: '+idShop+' .....Link : '+url)
+    console.log("end view shop id: " + idShop + " .....Link : " + url);
   } catch (error) {
-    console.log('Error view ');
-    console(error)
+    console.log("Error view ");
+    console.log(error);
   }
 };
 
-main();
+ main('https://shopee.vn/phiphuc1994');
+// module.exports = ma;
