@@ -209,19 +209,20 @@ const main = async url => {
     const idShop = await getIdsByUsername(url, cookie);
     console.log("start view shop id: " + idShop + " .....Link : " + url);
 
-    const urlListItem = getUrlListItem(idShop);
     let count  = 0;
     let itemsPage = [];
     while(true){
       const list = await getList(cookie.cookieArray, 
         idShop, count);
-      itemsPage = list.items;
+      list.items.forEach(item => {
+        itemsPage.push(item);
+      });
       count +=  30;
-      if(itemsPage.length < 30){
+      if(list.items.length < 30){
         break
       }
     }
-
+    console.log(itemsPage.length);
     itemsPage.forEach(async item => {
       console.log(
         "view item: " +
@@ -240,5 +241,5 @@ const main = async url => {
   }
 };
 
- main('https://shopee.vn/phiphuc1994');
+ main('https://shopee.vn/applecare96');
 // module.exports = ma;
