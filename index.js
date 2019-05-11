@@ -111,14 +111,6 @@ const getIdsByUsername = (urlShop, cookie) => {
   });
 };
 
-const getUrlListItem = id => {
-  return (
-    "https://shopee.vn/api/v2/search_items/?by=pop&limit=30&match_id=" +
-    id +
-    "&newest=0&order=desc&page_type=shop"
-  );
-};
-
 const getList = (cookie, idShop, page) => {
   const url  = "https://shopee.vn/api/v2/search_items/?by=pop&limit=30&match_id=" +
   idShop +
