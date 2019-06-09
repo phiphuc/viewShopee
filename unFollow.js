@@ -1,6 +1,6 @@
 const puppeteer = require("puppeteer");
 const iPhone = puppeteer.devices['iPhone 6'];
-main = async ( username, password, shopID) => {
+main = async ( username, password) => {
   const browser = await puppeteer.launch({
     args: ["--incognito"],
     headless: false,
@@ -30,25 +30,57 @@ main = async ( username, password, shopID) => {
   await page.type('#login > div.v-center > div:nth-child(2) > input',password);
   await page.focus('#btn_login');
   await page.click('#btn_login');
-  await page.waitForNavigation();
 
-  const urlShop = 'https://shopee.vn/shop/'+shopID+'/following/';
-  await page.goto(urlShop);
-  await page.waitFor('#shop-followers#shop-followers > ul > li > div.btn-follow.follow.L14.active');
+  let infoPage = null;
+   const temp = await page.on('response', r => {
+    if(r.url() == 'https://banhang.shopee.vn/api/v2/login/'){
+      r.text().then( async textBody  => {
+        const req = r.request();;
+        console.log(req.url())
+        infoPage = JSON.parse(textBody);
+        const urlShop = 'https://shopee.vn/shop/'+infoPage.shopid+'/following/';
+        await page.goto(urlShop);
+        await page.waitFor('#shop-followers#shop-followers > ul > li > div.btn-follow.follow.L14.active');
+        await autoScroll(page);
 
-  await autoScroll(page);
+        let pageFollow =  await page.evaluate(() => {
+          let pageFollow = document.querySelectorAll('#shop-followers div.btn-follow.active.follow.L14');
+          pageFollow = [...pageFollow];
+          return pageFollow;
+        });
 
-  let pageFollow =  await page.evaluate(() => {
-    let pageFollow = document.querySelectorAll('#shop-followers div.btn-follow.active.follow.L14');
-    pageFollow = [...pageFollow];
-    return pageFollow;
+        for (let i = 1; i < pageFollow.length +1;i++){
+          await sleep(3000);
+          const temp = '#shop-followers > ul > li:nth-child('+i+') > div.btn-follow.active.follow.L14';
+          await page.click(temp);
+        }
+      });
+    }
   });
 
-  for (let i = 1; i < pageFollow.length +1;i++){
-    await sleep(5000);
-    const temp = '#shop-followers > ul > li:nth-child('+i+') > div.btn-follow.active.follow.L14';
-    await page.click(temp);
-  }
+  // while(!infoPage){
+  //   await sleep(3000);
+  // };
+  // infoPage = JSON.parse(infoPage);
+  // await page.waitForNavigation();
+  // const urlShop = 'https://shopee.vn/shop/'+infoPage.shopid+'/following/';
+  // await page.goto(urlShop);
+  // await page.waitFor('#shop-followers#shop-followers > ul > li > div.btn-follow.follow.L14.active');
+  // await autoScroll(page);
+
+  // let pageFollow =  await page.evaluate(() => {
+  //   let pageFollow = document.querySelectorAll('#shop-followers div.btn-follow.active.follow.L14');
+  //   pageFollow = [...pageFollow];
+  //   return pageFollow;
+  // });
+
+  // for (let i = 1; i < pageFollow.length +1;i++){
+  //   await sleep(3000);
+  //   const temp = '#shop-followers > ul > li:nth-child('+i+') > div.btn-follow.active.follow.L14';
+  //   await page.click(temp);
+  // }
+
+  
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -73,4 +105,4 @@ async function autoScroll(page){
   });
 }
 
-main('nguyenphucanh94@gmail.com', 'Phiphuc1994@','144010383');
+main('nguyenphucanh94@gmail.com', 'Phiphuc1994@');
