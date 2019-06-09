@@ -19,6 +19,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "jsdom": "^15.0.0",
+    "puppeteer": "^1.16.0",
     "query-string": "^6.5.0",
     "request": "^2.88.0"
   }
