@@ -1,5 +1,5 @@
 const puppeteer = require("puppeteer");
-const iPhone = puppeteer.devices['iPhone 6'];
+// const iPhone = puppeteer.devices['iPhone 6'];
 main = async ( username, password) => {
   const browser = await puppeteer.launch({
     args: ["--incognito"],
@@ -17,7 +17,7 @@ main = async ( username, password) => {
   //const browser = await browserTemp.createIncognitoBrowserContext();
   console.log("Browser openned");
   const page = await browser.newPage();
-  await page.emulate(iPhone);
+  // await page.emulate(iPhone);
   
   await page.goto('https://shopee.vn/buyer/login/', {waitUntil: 'domcontentloaded'});
   // await page.waitForNavigation({ waitUntil: 'networkidle0' }),
@@ -25,14 +25,24 @@ main = async ( username, password) => {
   
   await page.waitFor('#login > div.v-center > div:nth-child(1) > input');
   await page.focus('#login > div.v-center > div:nth-child(1) > input');
-  await page.type('#login > div.v-center > div:nth-child(1) > input',username);
-  await page.focus('#login > div.v-center > div:nth-child(2) > input');
-  await page.type('#login > div.v-center > div:nth-child(2) > input',password);
-  await page.focus('#btn_login');
-  await page.click('#btn_login');
+  // await page.type('#login > div.v-center > div:nth-child(1) > input',username);
+  // await page.focus('#login > div.v-center > div:nth-child(2) > input');
+  // await page.type('#login > div.v-center > div:nth-child(2) > input',password);
+  // await page.waitForSelector('#btn_login');
+  //await page.waitForSelector('body > div.otp-login > div.btn-submit');
+
+  // await page.focus('#btn_login');
+  // await page.click('#btn_login');
 
   let infoPage = null;
    const temp = await page.on('response', r => {
+     if(r.url() =='https://shopee.vn/buyer/login/login_post/'){
+       //console.log('ffffffffff');
+
+     }
+     if(r.url() == 'https://shopee.vn/buyer/api/vcode_login/'){
+       page.goto('https://shopee.vn/');
+     }
     if(r.url() == 'https://banhang.shopee.vn/api/v2/login/'){
       r.text().then( async textBody  => {
         const req = r.request();;
