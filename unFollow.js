@@ -1,6 +1,6 @@
 const puppeteer = require("puppeteer");
 // const iPhone = puppeteer.devices['iPhone 6'];
-main = async ( username, password) => {
+main = async () => {
   const browser = await puppeteer.launch({
     args: ["--incognito"],
     headless: false,
@@ -115,4 +115,4 @@ async function autoScroll(page){
   });
 }
 
-main('nguyenphucanh94@gmail.com', 'Phiphuc1994@');
+main();
